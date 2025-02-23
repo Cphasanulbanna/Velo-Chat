@@ -18,4 +18,10 @@ export const useAuthStore = create((set) => ({
       set({ isCheckingAuth: false });
     }
   },
+
+  signup: async (data) => {
+    try {
+      const response = await axiosInstance.post("/auth/signup", data);
+    } catch (error) {}
+  },
 }));
