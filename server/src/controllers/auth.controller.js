@@ -57,7 +57,39 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  res.render("login");
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields are required" });
+  try {
+    const user = await User.findOne({ email });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword)
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
+
+    generateToken(user._id, res);
+
+    res.status(200).json({
+      success: true,
+      message: "login success",
+      user: {
+        _id: user._id,
+        email: user.email,
+        fullName: user.fullName,
+        profilePic: user.profilePic,
+      },
+    });
+  } catch (error) {
+    res.stat(500).json({ success: false, message: error.message });
+  }
 };
 
 export const logout = async (req, res) => {
