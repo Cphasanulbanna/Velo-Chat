@@ -13,7 +13,7 @@ export const useAuthStore = create((set) => ({
     try {
       const response = await axiosInstance.get("/auth/check");
       set({ authUser: response.data });
-    } catch (error) {
+    } catch {
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -30,6 +30,16 @@ export const useAuthStore = create((set) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isSigningUp: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      set({ authUser: null });
+      toast.success("Logout Success");
+    } catch (error) {
+      toast.error(error.response.data.message);
     }
   },
 }));
