@@ -16,9 +16,17 @@ const Sidebar = () => {
     getUsers();
   }, [getUsers]);
 
+  const sortedUsers = [...users].sort((a, b) => {
+    const aOnline = onlineUsers.includes(a._id);
+    const bOnline = onlineUsers.includes(b._id);
+    return bOnline - aOnline; // Moves online users to the top
+  });
+
+  console.log({ sortedUsers });
+
   const filteredUsers = showOnlineOnly
-    ? users.filter((user) => onlineUsers.includes(user._id))
-    : users;
+    ? sortedUsers.filter((user) => onlineUsers.includes(user._id))
+    : sortedUsers;
 
   if (isUsersLoading) return <SideBarSkelton />;
   return (
