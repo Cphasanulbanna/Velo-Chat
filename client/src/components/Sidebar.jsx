@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import SideBarSkelton from "./skeltons/SideBarSkelton";
 import { Users } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Sidebar = () => {
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-  const onlineUsers = [];
   const { getUsers, users, setSelectedUser, isUsersLoading, selectedUser } =
     useChatStore();
+  const { onlineUsers } = useAuthStore();
+
+  console.log({ onlineUsers, users });
 
   useEffect(() => {
     getUsers();
@@ -37,7 +40,7 @@ const Sidebar = () => {
             <span className="text-sm">Show online only</span>
           </label>
           <span className="text-xs text-zinc-500">
-            ({onlineUsers.length - 1} online)
+            ({onlineUsers?.length - 1} online)
           </span>
         </div>
       </div>
@@ -60,12 +63,17 @@ const Sidebar = () => {
             <div className="relative mx-auto lg:mx-0">
               <img
                 src={user.profilePic || "/avatar.png"}
-                alt={user.name}
+                alt={user.fullName}
                 className="size-12 object-cover rounded-full"
               />
-              {onlineUsers.includes(user._id) && (
+              {onlineUsers.includes(user._id) ? (
                 <span
                   className="absolute bottom-0 right-0 size-3 bg-green-500 
+                    rounded-full ring-2 ring-zinc-900"
+                />
+              ) : (
+                <span
+                  className="absolute bottom-0 right-0 size-3 bg-red-500 
                     rounded-full ring-2 ring-zinc-900"
                 />
               )}
